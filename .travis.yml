@@ -1,0 +1,17 @@
+sudo: required
+services:
+- docker
+before_install:
+- openssl aes-256-cbc -K $encrypted_0ca8706286d1_key -iv $encrypted_0ca8706286d1_iv
+  -in secret_key.json.enc -out secret_key.json -d
+- docker build -t cauldyclark15/dockdock -f Dockerfile.dev .
+script:
+- docker run cauldyclark15/dockdock npm run test -- --coverage
+deploy:
+  provider: gae
+  keyfile: secret_key.json
+  project: general-216301
+  docker_build: remote
+  default: true
+  on:
+    branch: master
